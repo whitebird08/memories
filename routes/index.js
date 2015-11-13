@@ -61,6 +61,39 @@ router.post('/api/v1/memories', function(req, res, next) {
   });
 });
 
+
+
+router.get('/api/v1/memories/years', function(req, res, next) {
+  console.log('...connected')
+  pg.connect(conString, function(err, client, done) {
+    if (err) {
+      return console.error('error fetching client from pool', err);
+    }
+    client.query('SELECT * FROM memories', function(err,  result) {
+      // console.log(result, '...RESULT...')
+      
+      var modifiedResult = {
+        links: {},
+        data: []
+      }
+      
+      for(var i=0; i<result.rows.length; i++){
+        var fabulousObject = {
+          year:result.rows[i].year
+        }
+        modifiedResult.data.push(fabulousObject)
+      }
+      
+      done();
+
+      if (err) {
+        return console.error('error running query', err);
+      }
+      res.send(modifiedResult);
+    });
+  });
+});
+
 router.get('/api/v1/memories/:year', function(req, res, next) {
   console.log('...connected')
   pg.connect(conString, function(err, client, done) {
@@ -68,7 +101,7 @@ router.get('/api/v1/memories/:year', function(req, res, next) {
       return console.error('error fetching client from pool', err);
     }
     client.query('SELECT * FROM memories WHERE year = $1', [req.params.year], function(err,  result) {
-      console.log(result, '...RESULT...')
+      // console.log(result, '...RESULT...')
       
       var modifiedResult = {
         links: {},
