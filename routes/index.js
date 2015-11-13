@@ -5,7 +5,7 @@ var pg = require('pg');
 var conString = process.env.DATABASE_URL
 
 router.get('/api/v1/memories', function(req, res, next) {
-  console.log('...conected')
+  console.log('...connected')
   pg.connect(conString, function(err, client, done) {
     if (err) {
       return console.error('error fetching client from pool', err);
